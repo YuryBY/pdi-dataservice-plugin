@@ -24,6 +24,7 @@ package org.pentaho.di.trans.dataservice.client;
 
 import org.pentaho.di.core.ProvidesDatabaseConnectionInformation;
 import org.pentaho.di.core.database.DatabaseMeta;
+import org.pentaho.di.core.encryption.Encr;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.logging.LogChannelInterface;
 import org.pentaho.di.core.xml.XMLHandler;
@@ -76,7 +77,7 @@ public class DataServiceConnectionInformation implements ProvidesDatabaseConnect
       DatabaseMeta databaseMeta =
         new DatabaseMeta( dataServiceName, KETTLE_THIN, NATIVE, uri.getHost(), KETTLE_THIN,
           Integer.toString( uri.getPort() ), repository.getUserInfo().getLogin(),
-          repository.getUserInfo().getPassword() );
+          Encr.decryptPasswordOptionallyEncrypted( repository.getUserInfo().getPassword() ) );
       databaseMeta.setDBName( uri.getPath().substring( 1 ) );
       if ( uri.getScheme() != null && uri.getScheme().equalsIgnoreCase( "https" ) ) {
         databaseMeta.addExtraOption( databaseMeta.getPluginId(), ThinConnection.ARG_ISSECURE, "true" );
